@@ -18,3 +18,4 @@ else
 fi
 
 # Git practice
+# Practice Git diff
