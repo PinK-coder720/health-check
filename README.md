@@ -152,3 +152,22 @@ tail -n 10 /root/health-check/monitor.log
 - 使用 Docker 部署服务。
 - 尝试通过 CI/CD 自动执行检查。
 - 继续完善项目文档与自动化运维能力。
+
+## 自动恢复测试
+
+已完成 cron 定时触发的自动恢复验证：
+
+1. 临时停止 `python-api`，健康检查返回 HTTP 502。
+2. cron 每分钟执行 `monitor_api.sh`。
+3. 连续失败达到 3 次后，脚本尝试重启 `python-api`。
+4. 重启后再次执行健康检查，返回 HTTP 200。
+5. `monitor.log` 成功记录告警与恢复结果。
+
+关键日志示例：
+
+```text
+ALERT: API连续失败3次，尝试重启python-api
+RECOVERY: API自动恢复成功
+```
+
+**测试结论：** cron 定时任务、健康检查、连续失败计数、systemd 服务重启和恢复验证已形成自动化闭环。
